@@ -7,7 +7,7 @@ try{
   
   const {token} = req.cookies;
   if(!token){
-    throw new Error("Token not valid!!!!!");
+    return res.status(401).send("Unauthorized: No token provided");
   }
 
   const decodedObj = await jwt.verify(token, "DEV@TINDER$134");
