@@ -1,34 +1,28 @@
-
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose"); // ✅ fix typo
 const User = require("../models/user");
-const userAuth = async(req, res, next) =>{
-  //read the token from the req cookies
-try{
-  
-  const {token} = req.cookies;
-  if(!token){
-    throw new Error("Token not valid!!!!!");
-  }
 
-  const decodedObj = await jwt.verify(token, "DEV@TINDER$134");
+const userAuth = async (req, res, next) => {
+  try {
+    const { token } = req.cookies;
 
-  const {_id} = decodedObj;
-  const user = await User.findById(_id);
-  if(!user){
-    throw new Error("user not found");
-  } else {
+    if (!token) {
+      return res.status(401).json({ message: "Authentication token missing" });
+    }
+
+    const decodedObj = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decodedObj._id).select("-password");
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
     req.user = user;
     next();
+  } catch (err) {
+    console.error("Auth error:", err.message);
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
+};
 
-  //validate the token
-  //find the user
-} catch (err) {
-  res.status(400).send("ERROR: " + err.message);
-}
-}
-
-
-  module.exports = {
-     userAuth
-  };
+module.exports = { userAuth };
