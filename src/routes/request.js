@@ -35,7 +35,9 @@ requestRouter.post(
         ],
       });
       if (existingRequest) {
-        return res.status(400).json({ message: "Connection request already exists" });
+        return res
+          .status(400)
+          .json({ message: "Connection request already exists" });
       }
       const connectionRequest = new ConnectionRequestModel({
         fromUserId,
@@ -44,14 +46,13 @@ requestRouter.post(
       });
       const data = await connectionRequest.save();
 
-     res.send({
-  message:
-    status === "interested"
-      ? `${req.user.firstName} chose to connect with ${toUser.firstName} 🙌`
-      : `${req.user.firstName} chose to ignore ${toUser.firstName} ❌`,
-  data,
-});
-
+      res.send({
+        message:
+          status === "interested"
+            ? `${req.user.firstName} chose to connect with ${toUser.firstName}`
+            : `${req.user.firstName} chose to ignore ${toUser.firstName}`,
+        data,
+      });
     } catch (err) {
       res.status(400).send("Error sending connection request: " + err.message);
     }
