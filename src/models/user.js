@@ -51,7 +51,10 @@ const userSchema = mongoose.Schema({
     type: String,
     default: "/default-avatar.png", // Change to your actual default image path or URL
   },
+   timestamps: true
 });
+
+UserSchema.index({ firstName: 1, lastName: 1 });
 
 userSchema.methods.getJWT = async function () {
   const user = this;
