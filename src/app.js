@@ -27,27 +27,27 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// Routes
-app.get("/feed", userAuth, async (req, res) => {
-  try {
-    const loggedInUserId = req.user._id;
+// // Routes
+// app.get("/feed", userAuth, async (req, res) => {
+//   try {
+//     const loggedInUserId = req.user._id;
 
-    // count all users except logged-in
-    const count = await User.countDocuments({ _id: { $ne: loggedInUserId } });
-    if (count === 0) {
-      return res.status(404).json({ message: "No other users found" });
-    }
+//     // count all users except logged-in
+//     const count = await User.countDocuments({ _id: { $ne: loggedInUserId } });
+//     if (count === 0) {
+//       return res.status(404).json({ message: "No other users found" });
+//     }
 
-    // pick random user
-    const random = Math.floor(Math.random() * count);
-    const user = await User.findOne({ _id: { $ne: loggedInUserId } }).skip(random);
+//     // pick random user
+//     const random = Math.floor(Math.random() * count);
+//     const user = await User.findOne({ _id: { $ne: loggedInUserId } }).skip(random);
 
-    res.status(200).json({ data: user });
-  } catch (err) {
-    console.error("Error in /feed:", err);
-    res.status(400).send("Error fetching feed: " + err.message);
-  }
-});
+//     res.status(200).json({ data: user });
+//   } catch (err) {
+//     console.error("Error in /feed:", err);
+//     res.status(400).send("Error fetching feed: " + err.message);
+//   }
+// });
 
 // Other routes
 app.use("/", authRouter);
