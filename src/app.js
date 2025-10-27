@@ -6,6 +6,7 @@ const connectDb = require("./config/database");
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const http = require("http");
 
 // Routers
 const authRouter = require("./routes/auth");
@@ -16,6 +17,8 @@ const userRouter = require("./routes/user");
 // Models & Middleware
 const User = require("./models/user");
 const { userAuth } = require("./middlewares/auth"); // ✅ import userAuth
+const initializeSocket = require("./utils/socket");
+
 
 // Middleware
 app.use(
@@ -34,12 +37,15 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
+const server = http.createServer(app);
+initializeSocket(server);
+
 // Connect DB and start server
 connectDb()
   .then(() => {
     console.log("Database connection established...");
-    app.listen(3000, () => {
-      console.log("🚀 Server is successfully listening on port 3000");
+    server.listen(process.env.PORT, () => {
+      console.log(`🚀 Server is successfully listening on port ${process.env.PORT}`);
     });
   })
   .catch((err) => {
