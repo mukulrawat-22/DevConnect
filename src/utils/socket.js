@@ -19,7 +19,7 @@ const initializeSocket = (server) => {
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-    socket.on("joinChat", ({ firstName, userId, targetUser }) => {
+    socket.on("joinChat", ({ firstName, lastName, userId, targetUser }) => {
       const roomId = getSecretRoomId(userId, targetUser);
       console.log(firstName + " joined room " + roomId);
       socket.join(roomId);
@@ -27,8 +27,7 @@ const initializeSocket = (server) => {
 
     socket.on(
       "sendMessage",
-      async ({ firstName, userId, targetUser, text }) => {
-        
+      async ({ firstName, lastName, userId, targetUser, text }) => {
 
         // Save message to database
         try {
@@ -47,8 +46,8 @@ const initializeSocket = (server) => {
           //push the message to the chat's messages array
           chat.messages.push({senderId: userId, text});
           await chat.save();
-          
-        io.to(roomId).emit("messageReceived", { firstName, text });
+
+        io.to(roomId).emit("messageReceived", { firstName, lastName, text });
         } catch (error) {
           console.error("Error saving message to database:", error);
         }
