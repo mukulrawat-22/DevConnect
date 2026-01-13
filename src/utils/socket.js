@@ -17,11 +17,11 @@ const initializeSocket = (server) => {
     },
   });
   io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
+    // console.log("A user connected:", socket.id);
 
     socket.on("joinChat", ({ firstName, lastName, userId, targetUser }) => {
       const roomId = getSecretRoomId(userId, targetUser);
-      console.log(firstName + " joined room " + roomId);
+      // console.log(firstName + " joined room " + roomId);
       socket.join(roomId);
     });
 
@@ -32,7 +32,7 @@ const initializeSocket = (server) => {
         // Save message to database
         try {
           const roomId = getSecretRoomId(userId, targetUser); // ✅ FIXED
-        console.log(firstName + " sent: " + text);
+        // console.log(firstName + " sent: " + text);
           let chat = await Chat.findOne({
             participants: { $all: [userId, targetUser] },
           });
